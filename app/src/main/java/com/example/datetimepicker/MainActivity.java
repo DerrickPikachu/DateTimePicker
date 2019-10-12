@@ -11,6 +11,8 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity {
 
     private class MainListener implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -27,18 +29,27 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            String d = Integer.toString(i) + "/" + Integer.toString(i1+1) + "/" + Integer.toString(i2);
+            String d = i + "/" + (i1+1) + "/" + i2;
+
+            if (i1+1 == 9 && i2 == 28) {
+                hello.setText("Say hello to your teacher!!");
+            }
+            else {
+                hello.setText("");
+            }
+
             date.setText(d);
         }
 
         @Override
         public void onTimeSet(TimePicker timePicker, int i, int i1) {
-            String t = Integer.toString(i) + ":" + Integer.toString(i1);
+            String t = i + ":" + i1;
             time.setText(t);
         }
     }
 
-    private TextView date, time;
+    private Calendar calendar;
+    private TextView date, time, hello;
     private MainListener listener;
 
     @Override
@@ -47,15 +58,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listener = new MainListener();
+        calendar = Calendar.getInstance();
 
         date = findViewById(R.id.setDate);
         time = findViewById(R.id.setTime);
+        hello = findViewById(R.id.sayHello);
         date.setOnClickListener(listener);
         time.setOnClickListener(listener);
     }
 
     private void showDatePicker() {
-        new DatePickerDialog(this, listener, 2019, 9 ,12).show();
+        new DatePickerDialog(this, listener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) ,Calendar.DAY_OF_MONTH).show();
     }
 
     private void showTimePicker() {
